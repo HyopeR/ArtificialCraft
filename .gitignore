@@ -10,3 +10,4 @@
 # Data
 /data/*
 !/data/**/
+/data/*/.gitkeep
