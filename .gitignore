@@ -8,6 +8,5 @@
 .idea
 
 # Data
-/data/*
-!/data/**/
-/data/*/.gitkeep
+/data/*.{jpg,jpeg,png}
+/data/**/*.{jpg,jpeg,png}
