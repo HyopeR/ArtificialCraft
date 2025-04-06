@@ -8,5 +8,6 @@
 .idea
 
 # Data
-/data/*.{jpg,jpeg,png}
-/data/**/*.{jpg,jpeg,png}
+**/*.jpg
+**/*.jpeg
+**/*.png
