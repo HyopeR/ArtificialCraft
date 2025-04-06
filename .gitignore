@@ -1,0 +1,12 @@
+# Osx
+.DS_Store
+
+# Virtual Env
+.venv
+
+# Ide
+.idea
+
+# Data
+/data/*
+!/data/**/

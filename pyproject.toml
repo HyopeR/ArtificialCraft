@@ -1,0 +1,22 @@
+[project]
+name = "artificialcraft"
+version = "0.1.0"
+description = ""
+authors = [
+    {name = "Tolgahan Çelik",email = "tol_celik@hotmail.com"}
+]
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "torch (>=2.6.0,<3.0.0)",
+    "torchvision (>=0.21.0,<0.22.0)",
+    "tqdm (>=4.67.1,<5.0.0)"
+]
+
+[tool.poetry]
+packages = [{include = "artificialcraft", from = "src"}]
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
