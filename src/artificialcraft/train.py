@@ -13,7 +13,7 @@ from tqdm import tqdm
 image_size = 64
 batch_size = 128
 nz = 100  # Latent vector size
-num_epochs = 100
+num_epochs = 50
 lr = 0.0002
 beta1 = 0.5
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
@@ -88,8 +88,8 @@ optimizerD = optim.Adam(D.parameters(), lr=lr, betas=(beta1, 0.999))
 optimizerG = optim.Adam(G.parameters(), lr=lr, betas=(beta1, 0.999))
 
 # Labels
-real_label = 1.
-fake_label = 0.
+real_label = 0.9
+fake_label = 0.0
 
 # Fixed noise for sampling
 fixed_noise = torch.randn(64, nz, 1, 1, device=device)
