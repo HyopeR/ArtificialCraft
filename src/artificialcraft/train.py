@@ -13,7 +13,7 @@ from tqdm import tqdm
 image_size = 64
 batch_size = 128
 nz = 100  # Latent vector size
-num_epochs = 50
+num_epochs = 100
 lr = 0.0002
 beta1 = 0.5
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
@@ -26,9 +26,9 @@ transform = transforms.Compose([
     transforms.Normalize([0.5] * 3, [0.5] * 3)
 ])
 
-datadir = os.path.join(os.getcwd(), 'src', 'artificialcraft', 'data', 'dog')
-dataset = ImageFolder(datadir, transform=transform)
-dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=True)
+data_dir = os.path.join(os.getcwd(), 'src', 'artificialcraft', 'data', 'dog')
+data_set = ImageFolder(data_dir, transform=transform)
+data_loader = DataLoader(data_set, batch_size=batch_size, shuffle=True)
 
 # Generator
 class Generator(nn.Module):
@@ -94,15 +94,23 @@ fake_label = 0.
 # Fixed noise for sampling
 fixed_noise = torch.randn(64, nz, 1, 1, device=device)
 
-# Load previously saved models (if they exist)
-if os.path.exists('generator.pth') and os.path.exists('discriminator.pth'):
-    G.load_state_dict(torch.load('generator.pth'))
-    D.load_state_dict(torch.load('discriminator.pth'))
+# Output directory
+model_dir = os.path.join(os.getcwd(), 'src', 'artificialcraft', 'model')
+os.makedirs(model_dir, exist_ok=True)  # Create the model directory if it doesn't exist
+
+# Load models from the model directory
+if os.path.exists(os.path.join(model_dir, 'generator.pth')) and os.path.exists(os.path.join(model_dir, 'discriminator.pth')):
+    G.load_state_dict(torch.load(os.path.join(model_dir, 'generator.pth')))
+    D.load_state_dict(torch.load(os.path.join(model_dir, 'discriminator.pth')))
     print("Resuming training from saved weights.")
+
+# Output directory
+output_dir = os.path.join(os.getcwd(), 'src', 'artificialcraft', 'output')
+os.makedirs(output_dir, exist_ok=True)  # Create the output directory if it doesn't exist
 
 # Training loop
 for epoch in range(num_epochs):
-    for i, (real_imgs, _) in enumerate(tqdm(dataloader)):
+    for i, (real_imgs, _) in enumerate(tqdm(data_loader)):
         # === Train Discriminator ===
         D.zero_grad()
         real_imgs = real_imgs.to(device)
@@ -134,11 +142,11 @@ for epoch in range(num_epochs):
     with torch.no_grad():
         fake = G(fixed_noise).detach().cpu()
     grid = make_grid(fake, padding=2, normalize=True)
-    save_image(grid, f'output/fake_epoch_{epoch + 1:03d}.png')
+    save_image(grid, os.path.join(output_dir, f'fake_epoch_{epoch + 1:03d}.png'))
 
-    # Save models after each epoch
-    torch.save(G.state_dict(), 'generator.pth')
-    torch.save(D.state_dict(), 'discriminator.pth')
+    # Save models after each epoch to the model directory
+    torch.save(G.state_dict(), os.path.join(model_dir, 'generator.pth'))
+    torch.save(D.state_dict(), os.path.join(model_dir, 'discriminator.pth'))
 
     print(f"Epoch [{epoch + 1}/{num_epochs}] Loss_D: {lossD:.4f} Loss_G: {lossG:.4f}")
 
