@@ -14,7 +14,7 @@ def main():
     image_size = 64
     batch_size = 128
     nz = 100  # Latent vector size
-    num_epochs = 10
+    num_epochs = 20
     lr = 0.0002
     beta1 = 0.5
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
@@ -86,8 +86,8 @@ def main():
     optimizerG = optim.Adam(G.parameters(), lr=lr, betas=(beta1, 0.999))
 
     # Labels
-    real_label = 0.9
-    fake_label = 0.0
+    # real_label = 0.9
+    # fake_label = 0.0
 
     # Fixed noise for sampling
     fixed_noise = torch.randn(64, nz, 1, 1, device=device)
@@ -114,26 +114,29 @@ def main():
             D.zero_grad()
             real_imgs = real_imgs.to(device)
             b_size = real_imgs.size(0)
-            label = torch.full((b_size,), real_label, device=device)
+
+            #Labels
+            real_label = torch.empty(b_size).uniform_(0.8, 1.0).to(device)
+            fake_label = torch.empty(b_size).uniform_(0.0, 0.2).to(device)
+
+            # Real images
             output = D(real_imgs)
-            lossD_real = criterion(output, label)
+            lossD_real = criterion(output, real_label)
             lossD_real.backward()
 
             # Fake images
             noise = torch.randn(b_size, nz, 1, 1, device=device)
             fake_imgs = G(noise)
-            label.fill_(fake_label)
             output = D(fake_imgs.detach())
-            lossD_fake = criterion(output, label)
+            lossD_fake = criterion(output, fake_label)
             lossD_fake.backward()
             optimizerD.step()
             lossD = lossD_real + lossD_fake
 
             # === Train Generator ===
             G.zero_grad()
-            label.fill_(real_label)
             output = D(fake_imgs)
-            lossG = criterion(output, label)
+            lossG = criterion(output, real_label)
             lossG.backward()
             optimizerG.step()
 
