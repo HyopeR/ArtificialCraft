@@ -7,6 +7,9 @@
 # Ide
 .idea
 
+# Python
+__pycache__
+
 # Data
 **/*.jpg
 **/*.jpeg
