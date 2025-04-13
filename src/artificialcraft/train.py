@@ -116,8 +116,8 @@ def main():
             b_size = real_imgs.size(0)
 
             #Labels
-            real_label = torch.empty(b_size).uniform_(0.9, 1.0).to(device)
-            fake_label = torch.empty(b_size).uniform_(0.0, 0.05).to(device)
+            real_label = torch.empty(b_size).uniform_(0.85, 1.0).to(device)
+            fake_label = torch.empty(b_size).uniform_(0.0, 0.15).to(device)
 
             # Real images
             output = D(real_imgs)
