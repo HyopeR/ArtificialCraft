@@ -14,7 +14,7 @@ def main():
     image_size = 64
     batch_size = 128
     nz = 100  # Latent vector size
-    num_epochs = 20
+    num_epochs = 30
     lr = 0.0002
     beta1 = 0.5
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
@@ -115,9 +115,13 @@ def main():
             real_imgs = real_imgs.to(device)
             b_size = real_imgs.size(0)
 
+            # Gaussian
+            real_imgs += torch.randn_like(real_imgs) * 0.05
+            real_imgs = torch.clamp(real_imgs, -1, 1)
+
             #Labels
-            real_label = torch.empty(b_size).uniform_(0.85, 1.0).to(device)
-            fake_label = torch.empty(b_size).uniform_(0.0, 0.15).to(device)
+            real_label = torch.empty(b_size).uniform_(0.9, 1.0).to(device)
+            fake_label = torch.empty(b_size).uniform_(0.0, 0.1).to(device)
 
             # Real images
             output = D(real_imgs)
